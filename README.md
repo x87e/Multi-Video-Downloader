@@ -1,7 +1,9 @@
 # Multi-Video Downloader
 
-A Windows x86/x64 desktop application written in VB.NET and WPF. 
-It's a simple yet intuitive GUI wrapper for yt-dlp to download video and audio from YouTube and over 140 supported websites.
+![Application's User Interface](Screenshots/mvd_gui_sm.png)
+
+A simple yet intuitive GUI wrapper for yt-dlp to download video and audio from YouTube and over 140 supported websites.
+- Windows x86/x64 desktop application written in VB.NET and WPF. 
 
 Output formats include MP4, MKV, WebM, MP3, M4A, WAV, FLAC and Opus. Available video formats and resolutions depend on the selected source. The application supports queues, playlists, filename templates and embedded file metadata.
 
@@ -62,6 +64,6 @@ Click **Tool Update Available** to install detected updates, or **Update Tools**
 
 Tools, themes, logs and settings are stored in `%LocalAppData%\Programs\MultiVid`. Queue settings are saved in `multi-video-settings.json`. Downloaded media is saved in the selected output folder.
 
-## Screenshots
+## Example Screenshot
 
-Screenshot placeholder.
+![Application UI Example](Screenshots/mvd_gui_example.png)
