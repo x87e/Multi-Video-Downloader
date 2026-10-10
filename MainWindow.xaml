@@ -1,0 +1,214 @@
+<Window x:Class="MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Multi-Video Downloader v1.0" Style="{StaticResource {x:Type Window}}" Width="1280" Height="900" MinWidth="1060" MinHeight="720" WindowStartupLocation="CenterScreen" UseLayoutRounding="True">
+    <Grid Background="{DynamicResource BackgroundBrush}" Margin="26,20,26,18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid Margin="0,0,0,19">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <Border Width="42" Height="42" Background="{DynamicResource AccentBrush}" CornerRadius="12" Margin="0,0,13,0">
+                    <Path Data="M 0 0 L 0 16 L 14 8 Z" Fill="{DynamicResource AccentTextBrush}" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+                        <Path.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform/>
+                                <RotateTransform Angle="90.264"/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Path.RenderTransform>
+                    </Path>
+                </Border>
+                <StackPanel>
+                    <TextBlock Text="Multi Video Downloader" FontSize="24" FontWeight="SemiBold"/>
+                    <TextBlock Text="YT-DLP GUI Wrapper for Windows" Foreground="{DynamicResource MutedBrush}" FontSize="12"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="Theme:" Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <ComboBox x:Name="ThemeBox" Width="145" SelectionChanged="ThemeChanged" ToolTip="Choose a theme"/>
+                <Button Content="Import…" Click="ImportThemeClick" Margin="8,0,0,0" ToolTip="Import a JSON color theme"/>
+            </StackPanel>
+        </Grid>
+        <Border Grid.Row="1" Style="{StaticResource Card}" Margin="0,0,0,16">
+            <Grid x:Name="AddPanel">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="Add video link:" Style="{StaticResource Label}"/>
+                    <TextBox x:Name="UrlBox" ToolTip="Paste HTTP or HTTPS video links from any yt-dlp supported website, separated by spaces" KeyDown="UrlKeyDown" AutomationProperties.Name="Video links"/>
+                </StackPanel>
+                <CheckBox x:Name="PlaylistCheck" Grid.Column="1" Content="Full playlist" VerticalAlignment="Top" Margin="18,40,18,0" ToolTip="Download all accessible videos in the linked playlist or collection. Unchecked downloads the first video only."/>
+                <Button x:Name="AddButton" Grid.Column="2" Content="+  Add to queue" Style="{StaticResource PrimaryButton}" VerticalAlignment="Top" Click="AddClick" Margin="0,23,0,0" Height="47"/>
+            </Grid>
+        </Border>
+        <Grid Grid.Row="2" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.06*"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border Style="{StaticResource Card}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid x:Name="QueueHeaderRow">
+                        <DockPanel Margin="0,0,0,14">
+                            <TextBlock Text="Download queue" FontSize="17" FontWeight="SemiBold"/>
+                            <TextBlock x:Name="QueueCount" Text="0 items" HorizontalAlignment="Right" Foreground="{DynamicResource MutedBrush}"/>
+                        </DockPanel>
+                    </Grid>
+                    <Grid Grid.Row="1">
+                        <ListBox x:Name="QueueList" SelectionChanged="QueueSelectionChanged" MouseDoubleClick="PreviewClick" AutomationProperties.Name="Download queue">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                                    <Setter Property="Margin" Value="0,0,4,8"/>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <DockPanel>
+                                            <TextBlock Text="{Binding Kind}" Foreground="{DynamicResource AccentBrush}" FontSize="10" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{Binding Status}" HorizontalAlignment="Right" FontSize="11" Foreground="{DynamicResource MutedBrush}"/>
+                                        </DockPanel>
+                                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="14" Margin="0,7,0,4" TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}"/>
+                                        <TextBlock Text="{Binding Detail}" Foreground="{DynamicResource MutedBrush}" FontSize="11" TextTrimming="CharacterEllipsis" ToolTip="{Binding Detail}"/>
+                                        <ProgressBar Value="{Binding Progress}" Maximum="100" Margin="0,12,0,0"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <StackPanel x:Name="EmptyQueue" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
+                            <TextBlock Text="↓" FontSize="46" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Build your download queue" FontSize="17" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,8,0,7"/>
+                            <TextBlock Text="Paste a video or playlist link above to begin." Foreground="{DynamicResource MutedBrush}" TextAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                    <WrapPanel x:Name="QueueActions" Grid.Row="2" Margin="0,12,0,0">
+                        <Button Content="Remove" Click="RemoveClick" Margin="0,0,8,0" ToolTip="Remove from queue; saved files are kept"/>
+                        <Button Content="Retry selected" Click="RetryClick" Margin="0,0,8,0"/>
+                        <Button Content="Clear completed" Click="ClearClick"/>
+                    </WrapPanel>
+                </Grid>
+            </Border>
+            <Border Grid.Column="2" Style="{StaticResource Card}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="{Binding ActualHeight, ElementName=QueueHeaderRow}"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="{x:Static SystemParameters.VerticalScrollBarWidth}"/>
+                    </Grid.ColumnDefinitions>
+                    <DockPanel Margin="0,0,4,0" VerticalAlignment="Top">
+                        <TextBlock Text="Video preview" FontSize="17" FontWeight="SemiBold"/>
+                        <Button Content="Open preview ↗" Click="PreviewClick" HorizontalAlignment="Right" MinHeight="28" Padding="10,5"/>
+                    </DockPanel>
+                    <ScrollViewer x:Name="PreviewScroll" Grid.Row="1" Grid.ColumnSpan="2" Margin="0,1,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <StackPanel Margin="0,0,4,0">
+                            <Border Background="{DynamicResource InputBrush}" Height="132" CornerRadius="8" ClipToBounds="True">
+                                <Grid>
+                                    <TextBlock x:Name="ThumbnailPlaceholder" Text="Select a queued video to preview" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{DynamicResource MutedBrush}"/>
+                                    <Image x:Name="PreviewImage" Stretch="Uniform"/>
+                                </Grid>
+                            </Border>
+                            <TextBlock x:Name="PreviewTitle" Text="Nothing selected yet" FontSize="17" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,13,0,5"/>
+                            <TextBlock x:Name="PreviewMeta" Text="Thumbnail, creator and duration appear here." Foreground="{DynamicResource MutedBrush}" TextWrapping="Wrap" FontSize="12"/>
+                            <TextBlock x:Name="PreviewDetail" TextWrapping="Wrap" Foreground="{DynamicResource MutedBrush}" FontSize="12" Margin="0,8,0,5"/>
+                            <StackPanel x:Name="NamingPanel" Margin="0,13,0,0" IsEnabled="False">
+                                <TextBlock Text="Filename and metadata template:" Style="{StaticResource Label}"/>
+                                <ComboBox x:Name="NameModeBox" SelectionChanged="NameChanged" AutomationProperties.Name="Filename mode"/>
+                                <TextBox x:Name="NameBox" Margin="0,8,0,0" TextChanged="NameTextChanged" AutomationProperties.Name="Custom filename or metadata template"/>
+                                <TextBlock x:Name="TokenHelp" Text="{}{title}  {uploader}  {channel}  {upload_date}  {year}  {playlist}  {index}  {id}  {resolution}  {Album:My Album}  {Genre:Rock}  {Track:1}" FontSize="11" Foreground="{DynamicResource MutedBrush}" TextWrapping="Wrap" Margin="0,7,0,0"/>
+                                <TextBlock x:Name="FilenamePreview" TextWrapping="Wrap" Foreground="{DynamicResource AccentBrush}" FontSize="11" Margin="0,8,0,0"/>
+                            </StackPanel>
+                            <Expander x:Name="MetadataExpander" Header="Embedded file metadata and audio bitrate" Foreground="{DynamicResource TextBrush}" Margin="0,13,0,0" IsEnabled="False">
+                                <StackPanel Margin="0,10,0,0">
+                                    <TextBlock Text="Audio bitrate" Style="{StaticResource Label}"/>
+                                    <ComboBox x:Name="AudioBitrateBox" SelectionChanged="AudioBitrateChanged" AutomationProperties.Name="Audio encoding bitrate"/>
+                                    <TextBlock x:Name="BitrateHelp" TextWrapping="Wrap" Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="0,7,0,12"/>
+                                    <TextBlock Text="Tags embedded in the file" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Blank fields keep website tags. A custom filename or filename template also sets the embedded Title unless you override it below. Fields accept the same {tokens}, expanded for each playlist entry. Named {Field:Value} tags in the filename template take priority over these fields." TextWrapping="Wrap" Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="0,7,0,10"/>
+                                    <TextBlock Text="{}{title}  {uploader}  {channel}  {upload_date}  {year}  {playlist}  {index}  {id}  {resolution}" TextWrapping="Wrap" Foreground="{DynamicResource AccentBrush}" FontSize="11" Margin="0,0,0,10"/>
+                                    <TextBlock x:Name="MetadataValidation" TextWrapping="Wrap" Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="0,0,0,10"/>
+                                    <UniformGrid x:Name="MetadataFieldsPanel" Columns="2"/>
+                                    <TextBlock Text="Supported tags vary by file format and player. Duration, resolution and bitrate come from the actual media. Retrying can update tags in an existing output; its audio bitrate is kept." TextWrapping="Wrap" Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="0,7,0,0"/>
+                                </StackPanel>
+                            </Expander>
+                            <WrapPanel Margin="0,13,0,0">
+                                <Button Content="Open source" Click="SourceClick" Margin="0,0,8,0"/>
+                                <Button Content="Open saved file" Click="OpenFileClick" Margin="0,0,8,0"/>
+                                <Button Content="View log" Click="ViewLogClick"/>
+                                <Button x:Name="MetadataHelpButton" Content="?" Click="MetadataHelpClick" Margin="8,0,0,0" Padding="12,9" ToolTip="How filenames and embedded metadata work" AutomationProperties.Name="Metadata help"/>
+                            </WrapPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+        <Border Grid.Row="3" Style="{StaticResource Card}" Margin="0,0,0,14">
+            <Grid x:Name="OptionsPanel">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="145"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="195"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="FORMAT · SELECTED ITEM" Style="{StaticResource Label}"/>
+                    <ComboBox x:Name="FormatBox" SelectionChanged="OptionsChanged" AutomationProperties.Name="Download format"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="VIDEO QUALITY" Style="{StaticResource Label}"/>
+                    <ComboBox x:Name="QualityBox" SelectionChanged="OptionsChanged" AutomationProperties.Name="Maximum video quality"/>
+                </StackPanel>
+                <StackPanel Grid.Column="4">
+                    <TextBlock Text="SAVE TO" Style="{StaticResource Label}"/>
+                    <TextBox x:Name="FolderBox" LostFocus="FolderChanged" AutomationProperties.Name="Output folder"/>
+                </StackPanel>
+                <StackPanel Grid.Column="5" Orientation="Horizontal" VerticalAlignment="Bottom" Margin="8,0,0,0">
+                    <Button Content="Browse…" Click="BrowseClick"/>
+                    <Button Content="Open" Click="OpenFolderClick" Margin="8,0,0,0"/>
+                </StackPanel>
+                <TextBlock x:Name="QualityHint" Grid.Row="1" Grid.ColumnSpan="3" Text="Best compatible source. No upscaling." TextWrapping="Wrap" Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="0,10,0,0" VerticalAlignment="Center"/>
+                <CheckBox x:Name="MetadataCheck" Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" Content="Embed source metadata and edited file tags" Margin="0,10,0,0" Checked="MetadataChanged" Unchecked="MetadataChanged"/>
+            </Grid>
+        </Border>
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Margin="0,0,20,0" VerticalAlignment="Center">
+                <TextBlock x:Name="StatusText" Text="Ready. Add a public video to get started." TextWrapping="Wrap" FontSize="12"/>
+                <TextBlock x:Name="ToolStatus" Text="Tools install on first use; updates are checked on startup." Foreground="{DynamicResource MutedBrush}" FontSize="11" Margin="0,5,0,0" TextTrimming="CharacterEllipsis" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <Button x:Name="UpdateButton" Content="Update tools" Click="UpdateClick" Margin="0,0,8,0"/>
+                <Button x:Name="CancelButton" Content="Cancel" Click="CancelClick" IsEnabled="False" Margin="0,0,8,0"/>
+                <Button x:Name="DownloadButton" Content="↓  Download queue" Click="DownloadClick" Style="{StaticResource PrimaryButton}" Padding="20,12"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

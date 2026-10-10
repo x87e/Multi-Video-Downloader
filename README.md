@@ -1,7 +1,7 @@
 # Multi-Video Downloader
 
-A simple yet intuitive GUI wrapper for yt-dlp to download video and audio from YouTube and over 140 supported websites.
-Windows 10/11 x86/x64 desktop application written in VB.NET and WPF. 
+A Windows x86/x64 desktop application written in VB.NET and WPF. 
+It's a simple yet intuitive GUI wrapper for yt-dlp to download video and audio from YouTube and over 140 supported websites.
 
 Output formats include MP4, MKV, WebM, MP3, M4A, WAV, FLAC and Opus. Available video formats and resolutions depend on the selected source. The application supports queues, playlists, filename templates and embedded file metadata.
 
@@ -19,8 +19,7 @@ Output formats include MP4, MKV, WebM, MP3, M4A, WAV, FLAC and Opus. Available v
 4. Select **Release** and **x64**/**x86**/**ANY** in the build configuration.
 5. Select **Build > Build Solution**.
 
-The executable and its config will be generated in `bin/Release/`. This repository contains the application source - downloaded tools and build outputs are not included but will be downloaded automatically when running the compiled binary.  
-Dependencies are saved in **%LocalAppData%\Programs\MultiVid**
+The executable and its configuration are generated in `bin/Release/`. This repository contains the application source; downloaded tools and build outputs are not included but will be downloaded automatically when running the compiled binary.  Dependencies are saved in **%LocalAppData%\Programs\MultiVid**
 
 ## Run
 
@@ -37,7 +36,7 @@ On first launch, the application downloads yt-dlp, Deno and FFmpeg, including ff
 
 Use **Cancel** to stop the current operation, **Retry selected** to retry an item, and **View log** to inspect its download log.
 
-Website support depends on the installed version of yt-dlp and access to the source video. The application does not import browser cookies or account logins yet.
+Website support depends on the installed version of yt-dlp and access to the source video. The application does not import browser cookies or account logins.
 
 ## Filenames and metadata
 
